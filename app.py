@@ -1,10 +1,27 @@
+"""
+The Streamlit Interface
+
+Start with:
+
+streamlit run app.py
+
+TODO: Rewrite the views in different files
+1) Login
+2) Registration
+3) Dashboard
+
+"""
+
+
 import streamlit as st
 from src.utils import mechanisms, io
+import yaml
+import streamlit_authenticator as stauth
 
 # SQLite database connection
 DATABASE = 'data/titanic.db'
+CREDENTIALS = 'data/credentials.yml'
 USER_ID = 1
-
 
 # Streamlit app
 st.title("Differential Privacy Web Interface")
@@ -24,6 +41,21 @@ query_type = st.selectbox(
     "Select Query Type",
     options=["Count", "Sum", "Average"]
 )
+
+with open(CREDENTIALS) as file:
+    config = yaml.load(file, Loader=yaml.loader.SafeLoader)
+
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days']
+)
+
+try:
+    authenticator.login()
+except Exception as e:
+    st.error(e)
 
 
 # Execute the selected query
