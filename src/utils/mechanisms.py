@@ -7,19 +7,21 @@ def laplace_mechanism(value: float, sensitivity: float, epsilon: float) -> float
     return np.random.laplace(value, scale)
 
 
-def update_total_user_budget(epsilon: float, user_id: int, db: str):
-    privacy_budget = io.query_database(f"SELECT PRIVACY_BUDGET FROM USERS WHERE ID = {user_id}", db)
+def update_total_user_budget(epsilon: float, username: str, db: str):
+    privacy_budget = io.query_database(f"SELECT current_privacy_budget FROM USERS WHERE name = '{username}'", db)
     io.update_database(
-        f"UPDATE USERS SET PRIVACY_BUDGET = {privacy_budget - epsilon} WHERE ID = {user_id}", db
+        f"UPDATE USERS SET current_privacy_budget = {privacy_budget - epsilon} WHERE name = '{username}'",
+        db,
+        modify=True
     )
 
 
-def count_with_laplacian_mechanism(epsilon: float, db: str, user_id: int) -> float:
+def count_with_laplacian_mechanism(epsilon: float, db: str, username: str) -> float:
     sensitivity = 1
     try:
         raw_result = io.query_database("SELECT COUNT(*) FROM passengers", db)
         count = laplace_mechanism(raw_result, sensitivity, epsilon)
-        update_total_user_budget(epsilon, user_id, db)
+        update_total_user_budget(epsilon, username, db)
         return count
     except Exception as e:
         print('Query Failed: ', str(e))
@@ -27,7 +29,7 @@ def count_with_laplacian_mechanism(epsilon: float, db: str, user_id: int) -> flo
 
 
 def sum_with_laplacian_mechanism(
-        column: str, epsilon: float, lower_bound: int, upper_bound: int, db: str, user_id: int
+        column: str, epsilon: float, lower_bound: int, upper_bound: int, db: str, username: str
 ) -> float:
     sensitivity = upper_bound - lower_bound
     try:
@@ -44,7 +46,7 @@ def sum_with_laplacian_mechanism(
             db
         )
         total_sum = laplace_mechanism(raw_result, sensitivity, epsilon)
-        update_total_user_budget(epsilon, user_id, db)
+        update_total_user_budget(epsilon, username, db)
         return total_sum
     except Exception as e:
         print('Query Failed: ', str(e))
@@ -52,7 +54,7 @@ def sum_with_laplacian_mechanism(
 
 
 def average_with_laplacian_mechanism(
-        column: str, epsilon: float, lower_bound: int, upper_bound: int, db: str, user_id: int
+        column: str, epsilon: float, lower_bound: int, upper_bound: int, db: str, username: str
 ) -> float:
     sensitivity = 1 + upper_bound - lower_bound
     try:
@@ -69,7 +71,7 @@ def average_with_laplacian_mechanism(
             db
         )
         average = laplace_mechanism(raw_result, sensitivity, epsilon)
-        update_total_user_budget(epsilon, user_id, db)
+        update_total_user_budget(epsilon, username, db)
         return average
     except Exception as e:
         print('Query Failed: ', str(e))
