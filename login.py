@@ -5,8 +5,8 @@ Start with:
 
 streamlit run app.py
 
-TODO: Write a registration page, that will add a new user to the credentials.yml and the USERS table in titanic.db
-TODO: Add Logout function
+TODO: Make registration page add the new user to the USERS table in titanic.db
+TODO: Make Logout function delete the cookie
 TODO: Dashboard: add column selector for average and sum
 TODO: Dashboard: add more mechanisms
 TODO: Write privacy budget reset script (to be scheduled to regularly reset the budget)
@@ -18,11 +18,10 @@ import streamlit as st
 import navigation_bar
 import yaml
 import streamlit_authenticator as stauth
+from src.utils import consts
 
 
-CREDENTIALS = 'data/credentials.yml'
-
-with open(CREDENTIALS) as file:
+with open(consts.CREDENTIALS) as file:
     config = yaml.load(file, Loader=yaml.loader.SafeLoader)
 
 authenticator = stauth.Authenticate(

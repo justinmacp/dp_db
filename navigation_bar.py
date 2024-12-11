@@ -36,7 +36,13 @@ def make_sidebar():
 
 
 def logout():
-    st.session_state.authentication_status = False
+    st.session_state['logout'] = True
+    st.session_state['name'] = None
+    st.session_state['username'] = None
+    st.session_state['authentication_status'] = None
+    st.session_state['email'] = None
+    st.session_state['roles'] = None
+    st.session_state['privacy_budget'] = None
     st.info("Logged out successfully!")
     time.sleep(0.5)
     st.switch_page("login.py")

@@ -1,11 +1,8 @@
 import streamlit as st
 from src.utils import mechanisms, io
 import navigation_bar
+from src.utils.consts import DATABASE
 
-# SQLite database connection
-DATABASE = 'data/titanic.db'
-
-print(st.session_state)
 
 # Streamlit app
 st.title("Differential Privacy Web Interface")
@@ -14,14 +11,15 @@ navigation_bar.make_sidebar()
 
 st.sidebar.write(f"Logges in as {st.session_state.username}")
 
-# Sidebar settings
-st.sidebar.header("Settings")
-
 if 'privacy_budget' not in st.session_state:
     st.session_state.privacy_budget = float(io.query_database(
         f"SELECT current_privacy_budget FROM USERS WHERE name = '{st.session_state.username}'",
         DATABASE
     ))
+
+# Sidebar settings
+st.sidebar.header("Settings")
+
 query_budget = st.sidebar.write(f"Your total privacy budget is {st.session_state.privacy_budget}")
 epsilon = st.sidebar.number_input(
     "Epsilon (privacy budget for query)", min_value=0.1, max_value=query_budget, value=1.0, step=0.1
