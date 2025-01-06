@@ -3,7 +3,7 @@
 This project allows you to grant data analysts access to your data without revealing information on any individual in
 your dataset by implementing differential privacy: https://en.wikipedia.org/wiki/Differential_privacy
 
-In short it allows for data analysis, where answers to a query are indistinguishable from one another whether a
+In short, it allows for data analysis, where answers to a query are indistinguishable from one another whether a
 particular individual's data is contained in the dataset or not
 
 # Setup with sample database
