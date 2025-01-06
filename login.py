@@ -3,7 +3,7 @@ The Streamlit Interface
 
 Start with:
 
-streamlit run app.py
+streamlit run login.py
 
 TODO: Dashboard: implement selector for multiple tables
 TODO: Dashboard: add more mechanisms
