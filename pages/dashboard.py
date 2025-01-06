@@ -1,7 +1,7 @@
 import streamlit as st
 from src.utils import mechanisms, io
 import navigation_bar
-from src.utils.consts import DATABASE
+from src.utils.consts import DATABASE, TABLE_NAME
 
 
 # Streamlit app
@@ -9,13 +9,15 @@ st.title("Differential Privacy Web Interface")
 
 navigation_bar.make_sidebar()
 
-st.sidebar.write(f"Logges in as {st.session_state.username}")
+st.sidebar.write(f"Logged in as {st.session_state.username}")
 
-if 'privacy_budget' not in st.session_state:
-    st.session_state.privacy_budget = float(io.query_database(
-        f"SELECT current_privacy_budget FROM USERS WHERE name = '{st.session_state.username}'",
-        DATABASE
-    ))
+
+st.session_state.privacy_budget = float(io.query_database(
+    f"SELECT current_privacy_budget FROM users WHERE name = '{st.session_state.username}'",
+    DATABASE
+))
+
+columns = io.get_column_names(TABLE_NAME, DATABASE)
 
 # Sidebar settings
 st.sidebar.header("Settings")
@@ -32,6 +34,10 @@ query_type = st.selectbox(
     "Select Query Type",
     options=["Count", "Sum", "Average"]
 )
+column_name = st.selectbox(
+    "Select Column",
+    options=columns
+)
 
 # Execute the selected query
 if st.button("Run Query"):
@@ -44,7 +50,7 @@ if st.button("Run Query"):
                 st.write(f"Differentially Private Count: {dp_result}")
             elif query_type == "Sum":
                 dp_result = mechanisms.sum_with_laplacian_mechanism(
-                    column='Age',
+                    column=column_name,
                     epsilon=epsilon,
                     lower_bound=LOWER_BOUND,
                     upper_bound=UPPER_BOUND,
@@ -54,7 +60,7 @@ if st.button("Run Query"):
                 st.write(f"Differentially Private Sum: {dp_result}")
             elif query_type == "Average":
                 dp_result = mechanisms.average_with_laplacian_mechanism(
-                    column='Age',
+                    column=column_name,
                     epsilon=epsilon,
                     lower_bound=LOWER_BOUND,
                     upper_bound=UPPER_BOUND,

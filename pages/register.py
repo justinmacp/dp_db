@@ -22,7 +22,7 @@ try:
         with open(CREDENTIALS, 'w') as file:
             yaml.dump(config, file, default_flow_style=False)
         io.update_database(
-            f"INSERT INTO USERS VALUES [('name', 'max_privacy_budget', 'current_privacy_budget')]"
+            f"INSERT INTO users ('name', 'max_privacy_budget', 'current_privacy_budget') VALUES "
             f"('{username_of_registered_user}',100.0,100.0)", DATABASE, modify=True
         )
 

@@ -8,9 +8,9 @@ def laplace_mechanism(value: float, sensitivity: float, epsilon: float) -> float
 
 
 def update_total_user_budget(epsilon: float, username: str, db: str):
-    privacy_budget = io.query_database(f"SELECT current_privacy_budget FROM USERS WHERE name = '{username}'", db)
+    privacy_budget = io.query_database(f"SELECT current_privacy_budget FROM users WHERE name = '{username}'", db)
     io.update_database(
-        f"UPDATE USERS SET current_privacy_budget = {privacy_budget - epsilon} WHERE name = '{username}'",
+        f"UPDATE users SET current_privacy_budget = {privacy_budget - epsilon} WHERE name = '{username}'",
         db,
         modify=True
     )

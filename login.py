@@ -5,11 +5,9 @@ Start with:
 
 streamlit run app.py
 
-TODO: Make registration page add the new user to the USERS table in titanic.db
-TODO: Make Logout function delete the cookie
-TODO: Dashboard: add column selector for average and sum
+TODO: Dashboard: implement selector for multiple tables
 TODO: Dashboard: add more mechanisms
-TODO: Write privacy budget reset script (to be scheduled to regularly reset the budget)
+TODO: Find a scheduler for the privacy budget reset script
 
 """
 
