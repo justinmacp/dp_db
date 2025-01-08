@@ -1,0 +1,13 @@
+passengers:
+  numerical:
+    - Survived
+    - Pclass
+    - Age
+    - SibSp
+    - Parch
+    - Fare
+  categorical:
+    - Sex
+    - Embarked
+    - Survived
+    - Pclass

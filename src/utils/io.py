@@ -13,7 +13,7 @@ def query_database(query, database):
     connector = sqlite3.connect(database)
     cursor = connector.cursor()
     cursor.execute(query)
-    result = cursor.fetchone()[0]
+    result = cursor.fetchall()
     connector.close()
     return result
 
@@ -24,7 +24,7 @@ def update_database(query, db, params=None, modify=False):
     try:
         if modify:
             cursor.execute(query, params or ())
-            conn.commit()  # Commit changes for UPDATE/INSERT/DELETE
+            conn.commit()
             return None
         else:
             cursor.execute(query, params or ())

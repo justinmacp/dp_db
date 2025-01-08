@@ -1,19 +1,17 @@
 import pandas as pd
 import sqlite3
+from src.utils.consts import TABLE_NAME, DATABASE, RAW_DATA
 
 # Step 1: Load the CSV file
-csv_file = '../data/train.csv'  # Replace with your CSV file path
-data = pd.read_csv(csv_file)
+data = pd.read_csv(RAW_DATA)
 
 # Step 2: Connect to SQLite database (or create it if it doesn't exist)
-db_name = '../data/titanic.db'  # Replace with your database name
-conn = sqlite3.connect(db_name)
+conn = sqlite3.connect(DATABASE)
 
 # Step 3: Write the DataFrame to a new SQLite table
-table_name = 'passengers'  # Replace with your table name
-data.to_sql(table_name, conn, if_exists='replace', index=False)
+data.to_sql(TABLE_NAME, conn, if_exists='replace', index=False)
 
 # Step 4: Close the connection
 conn.close()
 
-print(f"Data from {csv_file} has been successfully written to {db_name} in table '{table_name}'.")
+print(f"Data from {RAW_DATA} has been successfully written to {DATABASE} in table '{TABLE_NAME}'.")
