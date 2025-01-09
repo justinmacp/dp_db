@@ -34,7 +34,7 @@ epsilon = st.sidebar.number_input(
 # Query options
 query_type = st.selectbox(
     "Select Query Type",
-    options=["Count", "Sum", "Average", "Histogram"]
+    options=["Count", "Sum", "Average", "Histogram", "Bar Chart", "Contingency Table"]
 )
 
 if query_type in ["Sum", "Average", "Histogram"]:
@@ -53,6 +53,27 @@ if query_type == "Histogram":
     bin_size = st.sidebar.number_input("Bin Size")
 else:
     bin_size = None
+
+if query_type in ["Bar Chart", "Contingency Table"]:
+    column_name = st.selectbox(
+        "Select Column",
+        options=categorical_columns
+    )
+    categories = st.text_input("Categories enclosed in Quotation Marks and Comma Separated")
+else:
+    column_name = None
+    categories = None
+
+if query_type == "Contingency Table":
+    column_name_2 = st.selectbox(
+        "Select Second Column",
+        options=categorical_columns
+    )
+    categories_2 = st.text_input("Categories of second column enclosed in Quotation Marks and Comma Separated")
+else:
+    column_name_2 = None
+    categories_2 = None
+
 
 # Execute the selected query
 if st.button("Run Query"):
@@ -93,7 +114,30 @@ if st.button("Run Query"):
                     db=DATABASE,
                     username=st.session_state.username
                 )
-                pass
+                st.write(f"Differentially private Histogram:")
+                st.write(dp_result)
+            elif query_type == "Bar Chart":
+                dp_result = mechanisms.bar_chart_with_laplacian_mechanism(
+                    group_column=column_name,
+                    group_members=categories,
+                    epsilon=epsilon,
+                    db=DATABASE,
+                    username=st.session_state.username
+                )
+                st.write(f"Differentially private Bar Chart:")
+                st.write(dp_result)
+            elif query_type == "Contingency Table":
+                dp_result = mechanisms.contingency_table_with_laplacian_mechanism(
+                    group_column_1=column_name,
+                    group_members_1=categories,
+                    group_column_2=column_name_2,
+                    group_members_2=categories_2,
+                    epsilon=epsilon,
+                    db=DATABASE,
+                    username=st.session_state.username
+                )
+                st.write(f"Differentially private Contingency Table:")
+                st.write(dp_result)
         else:
             raise Exception("The privacy budget allocated to this query exceeds your current total privacy budget")
     except Exception as e:
