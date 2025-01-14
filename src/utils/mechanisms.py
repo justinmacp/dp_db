@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from src.utils import io
-from src.utils.consts import ERROR_CODE, COUNT_SENSITVITY, COMMA_STR, EMPTY_STR, DOUBLE_QUOTE_STR
+from src.utils.consts import ERROR_CODE, COUNT_SENSITIVITY, COMMA_STR, EMPTY_STR, DOUBLE_QUOTE_STR
 from src.utils.helper import adjust_raw_histogram_to_specified_range
 import streamlit as st
 
@@ -26,7 +26,7 @@ def update_total_user_budget(epsilon: float, username: str, db: str):
 def count_with_laplacian_mechanism(epsilon: float, db: str, username: str) -> float:
     try:
         raw_result = io.query_database("SELECT COUNT(*) FROM passengers", db)[0][0]
-        count = laplace_mechanism(raw_result, COUNT_SENSITVITY, epsilon)
+        count = laplace_mechanism(raw_result, COUNT_SENSITIVITY, epsilon)
         update_total_user_budget(epsilon, username, db)
         return count
     except Exception as e:
@@ -40,13 +40,13 @@ def sum_with_laplacian_mechanism(
     sensitivity = upper_bound - lower_bound
     try:
         raw_result = io.query_database(
-            f"SELECT SUM(clipped_column) FROM "
+            f"SELECT SUM(Clipped{column}) FROM "
             f"("
             f"SELECT CASE "
             f"WHEN {column} < {lower_bound} THEN {lower_bound} "
             f"WHEN {column} > {upper_bound} THEN {upper_bound} "
             f"ELSE {column} "
-            f"END AS clipped_column "
+            f"END AS Clipped{column} "
             f"FROM passengers"
             f")",
             db
@@ -62,10 +62,10 @@ def sum_with_laplacian_mechanism(
 def average_with_laplacian_mechanism(
         column: str, epsilon: float, lower_bound: int, upper_bound: int, db: str, username: str
 ) -> float:
-    sensitivity = COUNT_SENSITVITY + upper_bound - lower_bound
+    sensitivity = COUNT_SENSITIVITY + upper_bound - lower_bound
     try:
         raw_result = io.query_database(
-            f"SELECT AVG(clipped_column) FROM "
+            f"SELECT AVG(Clipped{column}) FROM "
             f"("
             f"SELECT CASE "
             f"WHEN {column} < {lower_bound} THEN {lower_bound} "
@@ -87,6 +87,18 @@ def average_with_laplacian_mechanism(
 def histogram_with_laplacian_mechanism(
         column: str, epsilon: float, lower_bound: int, upper_bound: int, bin_size: int, db: str, username: str
 ):
+    """
+
+    :param column:
+    :param epsilon:
+    :param lower_bound:
+    :param upper_bound:
+    :param bin_size:
+    :param db:
+    :param username:
+    :return:
+    """
+    # TODO: bin size 0 needs an exception
     try:
         raw_result = io.query_database(
             f"WITH {column}Ranges AS ("
@@ -113,7 +125,7 @@ def histogram_with_laplacian_mechanism(
             db
         )
         requested_histogram = adjust_raw_histogram_to_specified_range(raw_result, lower_bound, upper_bound, bin_size)
-        requested_histogram = requested_histogram.apply(laplace_mechanism, args=(COUNT_SENSITVITY, epsilon))
+        requested_histogram = requested_histogram.apply(laplace_mechanism, args=(COUNT_SENSITIVITY, epsilon))
         update_total_user_budget(epsilon, username, db)
         return requested_histogram
     except Exception as e:
@@ -136,7 +148,7 @@ def bar_chart_with_laplacian_mechanism(group_column: str, group_members: str, ep
                 requested_bar_chart.at[0, col] = bar_chart.at[0, col]
         requested_bar_chart = (
             requested_bar_chart
-            .apply(laplace_mechanism, args=(COUNT_SENSITVITY, epsilon))
+            .apply(laplace_mechanism, args=(COUNT_SENSITIVITY, epsilon))
             .set_index(pd.Index(['Count']))
         )
         update_total_user_budget(epsilon, username, db)
@@ -163,7 +175,7 @@ def contingency_table_with_laplacian_mechanism(
         contingency_table = io.query_database(
             f"SELECT {group_column_1}, {group_2_query} FROM passengers GROUP BY {group_column_1}", db
         )
-        contingency_table = contingency_table.apply(laplace_mechanism, args=(COUNT_SENSITVITY, epsilon))
+        contingency_table = contingency_table.apply(laplace_mechanism, args=(COUNT_SENSITIVITY, epsilon))
         update_total_user_budget(epsilon, username, db)
         return contingency_table
     except Exception as e:
