@@ -15,6 +15,9 @@ def get_current_page_name():
 
 
 def make_sidebar():
+    """
+    Creates the sidebar with the navigation functionality.
+    """
     with st.sidebar:
         st.title("Differential Privacy Tool")
         st.write("")
@@ -36,6 +39,9 @@ def make_sidebar():
 
 
 def logout():
+    """
+    Implements the logout function by clearing the session state and redirecting to the login page.
+    """
     st.session_state['logout'] = True
     st.session_state['name'] = None
     st.session_state['username'] = None

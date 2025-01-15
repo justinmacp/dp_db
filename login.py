@@ -5,7 +5,6 @@ Start with:
 
 streamlit run login.py
 
-TODO: Docstrings for all functions
 TODO: unit tests for the required functions
 TODO: Fix dashboard script: cleanup conditional statements
 TODO: The sum mechanism causes a data leak: if a user asks for the sum and specifies 1 as lower and upper bound an exact
@@ -13,7 +12,6 @@ TODO: The sum mechanism causes a data leak: if a user asks for the sum and speci
 TODO: Dashboard: implement selector for multiple tables
 TODO: Dashboard: add more mechanisms
 TODO: Find a scheduler for the privacy budget reset script (cron job): add this to readme
-
 """
 
 
