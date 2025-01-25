@@ -1,7 +1,7 @@
-CREDENTIALS = 'C:/Users/jumacp/PycharmProjects/dp_db/data/credentials.yml'
-SCHEMA = 'C:/Users/jumacp/PycharmProjects/dp_db/data/schema.yml'
-DATABASE = 'C:/Users/jumacp/PycharmProjects/dp_db/data/titanic.db'
-RAW_DATA = 'C:/Users/jumacp/PycharmProjects/dp_db/data/train.csv'
+CREDENTIALS = 'data/credentials.yml'
+SCHEMA = 'data/schema.yml'
+DATABASE = 'data/titanic.db'
+RAW_DATA = 'data/train.csv'
 TABLE_NAME = 'passengers'
 NUMERIC_TYPE_COLUMNS = ["INT", "REAL", "NUMERIC", "DECIMAL", "FLOAT", "DOUBLE"]
 QUERY_TYPES = ["Count", "Sum", "Average", "Histogram", "Bar Chart", "Contingency Table"]
